@@ -105,7 +105,7 @@ fun FormScreen(navController: NavController) {
                 .padding(16.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = { navController.navigate("formComplete") }) {
+        Button(onClick = { navController.navigate("display/$name") }) {
             Text(text = "Valider")
         }
         Button(onClick = { navController.popBackStack() }) {
@@ -125,6 +125,7 @@ fun FormCompleteScreen(navController: NavController, name: String) {
     ) {
         Text(text = "Affichage du formulaire",
             style = MaterialTheme.typography.titleMedium)
+        Text(text = name)
         Spacer(modifier = Modifier.height(24.dp))
         Button(onClick = { navController.popBackStack() }) {
             Text(text = "Retour")
