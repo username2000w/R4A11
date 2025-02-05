@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -23,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -56,11 +58,12 @@ fun AppNavigation() {
             FormScreen(navController = navController)
         }
         composable(
-            route = "display/{name}",
-            arguments = listOf(navArgument("name") { defaultValue = "" })
+            route = "display/{name}/{age}",
+            arguments = listOf(navArgument("name") { defaultValue = "" }, navArgument("age") { defaultValue = "" }),
         ) { backStackEntry ->
             val name = backStackEntry.arguments?.getString("name") ?: ""
-            FormCompleteScreen(navController = navController, name)
+            val age = backStackEntry.arguments?.getString("age") ?: ""
+            FormCompleteScreen(navController = navController, name, age)
         }
     }
 }
@@ -86,6 +89,7 @@ fun HomeScreen(navController: NavController) {
 @Composable
 fun FormScreen(navController: NavController) {
     var name by remember { mutableStateOf("") }
+    var age by remember { mutableStateOf("") }
 
     Column (
         modifier = Modifier
@@ -104,8 +108,17 @@ fun FormScreen(navController: NavController) {
                 .fillMaxWidth()
                 .padding(16.dp)
         )
+        TextField(
+            value = age,
+            onValueChange = { newText -> age = newText },
+            label = { Text("Entrez votre age") },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        )
         Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = { navController.navigate("display/$name") }) {
+        Button(onClick = { navController.navigate("display/$name/$age") }) {
             Text(text = "Valider")
         }
         Button(onClick = { navController.popBackStack() }) {
@@ -115,7 +128,7 @@ fun FormScreen(navController: NavController) {
 }
 
 @Composable
-fun FormCompleteScreen(navController: NavController, name: String) {
+fun FormCompleteScreen(navController: NavController, name: String, age: String) {
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -125,7 +138,8 @@ fun FormCompleteScreen(navController: NavController, name: String) {
     ) {
         Text(text = "Affichage du formulaire",
             style = MaterialTheme.typography.titleMedium)
-        Text(text = name)
+        Text(text = "Bonjour $name !")
+        Text(text = "Vous avez $age ans !")
         Spacer(modifier = Modifier.height(24.dp))
         Button(onClick = { navController.popBackStack() }) {
             Text(text = "Retour")
